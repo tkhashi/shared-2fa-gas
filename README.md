@@ -10,7 +10,8 @@ Google Apps Scriptで動作する2FAトークン共有Webアプリケーショ�
 
 ## 参考
 
-このコードは以下の記事を参考にしています:
+このコードは以下の記事を参考にしています
+
 https://zenn.dev/gmomedia/articles/f24377fbabbf84
 
 ## 必要なもの
