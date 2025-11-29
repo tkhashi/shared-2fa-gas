@@ -2,6 +2,8 @@
 
 Google Apps Scriptで動作する2FAトークン共有Webアプリケーション。
 
+<img width="610" height="295" alt="スクリーンショット 2025-11-30 4 58 43" src="https://github.com/user-attachments/assets/1c1a1bcf-0ece-469b-a896-c5a662086124" />
+
 ## 概要
 
 チーム内で共有する2FAトークンをGoogleスプレッドシート上で一元管理し、Webインターフェースから簡単にアクセスできます。
@@ -47,11 +49,23 @@ npx webpack
    - アクセス権限を適切に設定
 
 ## 使い方
+1.スプレッドシートにシード値を記載
 
-1. デプロイしたURLにアクセス
-2. ドロップダウンからサービス/アカウントを選択
-3. 「コード取得」ボタンをクリック
-4. 表示された6桁のコードを使用
+<img width="610" height="295" alt="スクリーンショット 2025-11-30 4 59 54" src="https://github.com/user-attachments/assets/0582d8ad-8877-46c7-a555-7c0bf7c68d1e" />
+
+2. デプロイしたURLにアクセス
+
+3. ドロップダウンからサービス/アカウントを選択
+
+<img width="610" height="295" alt="スクリーンショット 2025-11-30 5 01 13" src="https://github.com/user-attachments/assets/468fbee3-2b4f-4004-b401-12ba86c3208f" />
+
+4. 「コード取得」ボタンをクリック
+
+5. 表示された6桁のコードを使用
+
+<img width="610" height="295" alt="スクリーンショット 2025-11-30 4 58 43" src="https://github.com/user-attachments/assets/1c1a1bcf-0ece-469b-a896-c5a662086124" />
+
+
 
 トークンは30秒ごとに更新されます。残り時間がカウントダウン表示されます。
 
