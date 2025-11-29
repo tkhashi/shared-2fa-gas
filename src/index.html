@@ -5,64 +5,136 @@
   <base target="_top">
   <meta charset="UTF-8">
   <script>
-    const STEP = 30;
+    /**
+     * サーバーから渡されるデータの型定義（コメントで表現）
+     * @typedef {Object} TotpPageData
+     * @property {Array<{service: string, account: string}>} [items] - サービスアカウント一覧
+     * @property {string} [service] - 選択されたサービス
+     * @property {string} [account] - 選択されたアカウント
+     * @property {string} token - TOTPトークン（6桁）
+     * @property {number} remaining - 残り秒数
+     */
+
+    /** TOTP更新間隔（秒） */
+    const TOTP_STEP_SECONDS = 30;
+
+    /** ServiceAccountのエンコード/デコード用セパレータ */
+    const SERVICE_ACCOUNT_SEPARATOR = '/';
+
+    /** サーバーから渡されたデータ */
     const DATA = JSON.parse('<?= data ?>');
 
+    /** 残り秒数（クライアント側で管理） */
     let remainingSec = null;
+
+    /** カウントダウンタイマーID */
     let timerId = null;
 
+    /**
+     * ページ読み込み時の初期化処理
+     */
     function onLoad() {
-      const select = document.getElementById('selector');
+      populateServiceAccountSelector();
+      displayToken();
+      initializeRemainingSeconds();
+      startCountdown();
+    }
 
-      // 先頭の「選択してください」以外を全部削除
+    /**
+     * サービスアカウント選択肢を構築
+     */
+    function populateServiceAccountSelector() {
+      const select = document.getElementById('selector');
+      if (!select) return;
+
+      // 既存のオプション（「選択してください」以外）を削除
       while (select.options.length > 1) {
         select.remove(1);
       }
 
-      // サービス一覧を再構築
+      // サービス一覧から選択肢を生成
       if (DATA.items && Array.isArray(DATA.items)) {
         DATA.items.forEach(item => {
           const opt = document.createElement('option');
-          opt.value = item.service + '/' + item.account;
-          opt.textContent = item.service + ' / ' + item.account;
+          opt.value = encodeServiceAccountId(item);
+          opt.textContent = formatServiceAccountLabel(item);
           select.appendChild(opt);
         });
       }
+    }
 
-      // トークン表示
-      document.getElementById('token').textContent = DATA.token || '';
+    /**
+     * ServiceAccountをselector用の値にエンコード
+     * types.tsのencodeServiceAccountIdと同じロジック
+     * @param {{service: string, account: string}} sa
+     * @returns {string}
+     */
+    function encodeServiceAccountId(sa) {
+      return sa.service + SERVICE_ACCOUNT_SEPARATOR + sa.account;
+    }
 
-      // 残り秒数の初期値（サーバ側から来た値を優先）
+    /**
+     * ServiceAccountの表示用ラベルをフォーマット
+     * @param {{service: string, account: string}} sa
+     * @returns {string}
+     */
+    function formatServiceAccountLabel(sa) {
+      return sa.service + ' / ' + sa.account;
+    }
+
+    /**
+     * トークンを画面に表示
+     */
+    function displayToken() {
+      const tokenElement = document.getElementById('token');
+      if (tokenElement) {
+        tokenElement.textContent = DATA.token || '';
+      }
+    }
+
+    /**
+     * 残り秒数の初期値を設定
+     */
+    function initializeRemainingSeconds() {
       if (typeof DATA.remaining === 'number' && !isNaN(DATA.remaining)) {
         remainingSec = DATA.remaining;
       } else {
-        remainingSec = STEP;
+        remainingSec = TOTP_STEP_SECONDS;
       }
-
-      // カウントダウン開始
-      startCountdown();
     }
 
+    /**
+     * カウントダウンを開始
+     */
     function startCountdown() {
-      const span = document.getElementById('remaining');
-      if (!span) return;
+      const remainingElement = document.getElementById('remaining');
+      if (!remainingElement) return;
 
+      // 既存のタイマーをクリア
       if (timerId) {
         clearInterval(timerId);
       }
 
-      // 最初に一回反映
-      span.textContent = remainingSec;
+      // 初期値を表示
+      updateRemainingDisplay(remainingElement);
 
       // 1秒ごとに更新
       timerId = setInterval(() => {
         remainingSec--;
         if (remainingSec < 0) {
           // 0を過ぎたら次のスロット開始とみなしてリセット
-          remainingSec = STEP;
+          remainingSec = TOTP_STEP_SECONDS;
         }
-        span.textContent = remainingSec;
+        updateRemainingDisplay(remainingElement);
       }, 1000);
+    }
+
+    /**
+     * 残り秒数の表示を更新
+     * @param {HTMLElement} element
+     */
+    function updateRemainingDisplay(element) {
+      element.textContent = remainingSec;
     }
   </script>
 </head>
@@ -70,9 +142,8 @@
 <body onload="onLoad()">
   <h1>Shared 2FA</h1>
 
-  <!-- ★ここが重要：method="post" ＋ action に ScriptApp.getService().getUrl() -->
+  <!-- method="post" + action に ScriptApp.getService().getUrl() を使用 -->
   <form method="post" action="<?= ScriptApp.getService().getUrl() ?>">
-    <!-- name="entry" 1つだけ -->
     <select id="selector" name="entry">
       <option value="">選択してください</option>
     </select>
