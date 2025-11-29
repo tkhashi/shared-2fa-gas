@@ -31,6 +31,7 @@ function doGet(e: GoogleAppsScript.Events.DoGet): GoogleAppsScript.HTML.HtmlOutp
     items: fetchServiceAccounts(),
     token: '',
     remaining: getRemainingSeconds(),
+    formAction: ScriptApp.getService().getUrl(),
   };
   template.data = JSON.stringify(data);
   return template
@@ -59,6 +60,7 @@ function doPost(e: GoogleAppsScript.Events.DoPost): GoogleAppsScript.HTML.HtmlOu
     account,
     token: '',
     remaining: getRemainingSeconds(),
+    formAction: ScriptApp.getService().getUrl(),
   };
 
   // シークレットを取得してトークン生成

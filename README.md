@@ -42,14 +42,15 @@ npm install
 2. ビルド:
 
 ```bash
-npx webpack
+npm run build
 ```
 
-3. `dist/Code.js` の内容をGoogle Apps Scriptにコピー
+3. GASプロジェクトに以下のファイルをコピー:
+   - `dist/Code.js` → GASの「コード.gs」（「.gs」ファイルとして追加）
+   - `src/index.html` → GASの「index.html」（HTMLファイルとして追加）
+   - `dist/client-bundle.html` → GASの「client-bundle.html」（HTMLファイルとして追加）
 
-4. `src/index.html` をGASのHTMLファイルとして追加
-
-5. GASをWebアプリケーションとしてデプロイ
+4. GASをWebアプリケーションとしてデプロイ
    - アクセス権限を適切に設定
 
 ## 使い方
@@ -75,10 +76,39 @@ npx webpack
 
 ## 技術スタック
 
-- Google Apps Script
-- Webpack
-- authenticator（TOTPトークン生成）
-- Node.js polyfill（GAS環境用）
+- **フロントエンド**: React 19 + TypeScript
+- **ビルドツール**: Vite（クライアント側）、Webpack（サーバー側）
+- **バックエンド**: Google Apps Script
+- **TOTP生成**: authenticator
+- **デプロイ**: すべてのJSがHTMLにインライン化される単一ファイル構成
+
+## アーキテクチャ
+
+### ファイル構成
+
+```
+src/
+  index.ts              # GAS サーバー側エントリポイント (doGet/doPost)
+  index.html            # GASテンプレートHTML（client-bundleを読み込む）
+  types.ts              # 共通型定義（サーバー・クライアント間で共有）
+  sheet.ts              # スプレッドシート操作
+  totp.ts               # TOTP生成ロジック
+  client/
+    main.tsx            # Reactエントリポイント
+    App.tsx             # メインReactコンポーネント
+
+dist/
+  Code.js               # サーバー側バンドル（GASにデプロイ）
+  client-bundle.html    # クライアント側バンドル（すべてインライン化）
+```
+
+### 特徴
+
+- **React**: モダンなUIライブラリで保守性向上
+- **型安全性**: TypeScriptによる型チェック
+- **単一ファイル**: vite-plugin-singlefileでJS/CSSをHTMLにインライン化
+- **責務分離**: サーバー側とクライアント側のコードを完全分離
+- **コード共有**: `types.ts`の型とロジックをサーバー・クライアント間で共有
 
 ## ライセンス
 

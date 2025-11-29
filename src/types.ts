@@ -15,6 +15,7 @@ export interface TotpPageData {
   account?: string;
   token: string;
   remaining: number;
+  formAction?: string; // フォームのaction URL
 }
 
 /**
