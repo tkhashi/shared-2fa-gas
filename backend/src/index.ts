@@ -3,21 +3,6 @@
  * doGet / doPost を実装
  */
 
-// --- process polyfill for GAS ---
-// @ts-ignore
-if (typeof process === 'undefined') {
-  // @ts-ignore
-  var process = {
-    env: {},
-    argv: [],
-    version: '',
-    cwd: function () {
-      return '';
-    }
-  };
-}
-// --- end process polyfill ---
-
 import { TotpPageData, decodeServiceAccountId } from './types';
 import { fetchServiceAccounts, findSecret } from './sheet';
 import { generateTotpToken, getRemainingSeconds } from './totp';

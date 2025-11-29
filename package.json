@@ -7,7 +7,7 @@
     "build:backend": "cd backend && npm install && npm run build",
     "build:frontend": "cd frontend && npm install && npm run build",
     "build": "npm run build:backend && npm run build:frontend && cp backend/src/appsscript.json dist/appsscript.json",
-    "deploy": "npm run build && npx @google/clasp push",
+    "deploy": "npm run build && npx @google/clasp push --force",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

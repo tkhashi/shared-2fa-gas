@@ -36,7 +36,7 @@ jobs:
           CLASP_JSON: ${{ secrets.CLASP_JSON }}
 
       - name: Deploy to GAS
-        run: npx clasp push
+        run: npx clasp push --force
 
       - name: Deploy new version
         run: |
