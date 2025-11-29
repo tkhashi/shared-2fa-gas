@@ -12,7 +12,7 @@ if (typeof process === 'undefined') {
 // --- end process polyfill ---
 
 
-const { authenticator } = require('authenticator');
+const authenticator = require('authenticator');
 
 const SHEET_NAME = 'secret-key'; // A:service, B:account, C:secret(Base32)
 
@@ -34,8 +34,13 @@ function doGet(e) {
  */
 function doPost(e) {
   const params = e.parameter || {};
-  const serviceParam = params.service;
-  const accountParam = params.account;
+
+  // ここを修正：entry から service と account を取り出す
+  const entry = params.entry || '';          // "hbdckr/ppdns"
+  const [serviceParam, accountParam] = entry.split('/');
+
+  Logger.log('doPost params: ' + JSON.stringify(params));
+  Logger.log('service=' + serviceParam + ', account=' + accountParam);
 
   const data = {
     service: serviceParam,
@@ -50,6 +55,8 @@ function doPost(e) {
   }
 
   const lastRow = sheet.getLastRow();
+  let matched = false;
+
   if (lastRow >= 2) {
     const sheetData = sheet.getRange(2, 1, lastRow - 1, 3).getValues(); // A2:Cn
 
@@ -57,14 +64,24 @@ function doPost(e) {
       const service = row[0];
       const account = row[1];
       const secret = row[2];
+
+      if (!service || !account || !secret) {
+        continue; // 空行や未設定行は飛ばす
+      }
+
+      Logger.log('row: service=' + service + ', account=' + account);
+
       if (service === serviceParam && account === accountParam) {
-        // ★ TOTP生成はライブラリに丸投げ
+        matched = true;
         data.token = authenticator.generateToken(secret);
         data.remaining = getRemainingSeconds();
+        Logger.log('generated token=' + data.token);
         break;
       }
     }
   }
+
+  Logger.log('matched=' + matched);
 
   const template = HtmlService.createTemplateFromFile('index');
   template.data = JSON.stringify(data);
@@ -73,6 +90,8 @@ function doPost(e) {
     .setTitle('Shared 2FA')
     .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
 }
+
+
 
 /**
  * 初期表示用のサービス一覧
@@ -88,9 +107,16 @@ function createInitialData() {
 
   if (lastRow >= 2) {
     const sheetData = sheet.getRange(2, 1, lastRow - 1, 3).getValues();
+
     for (const row of sheetData) {
       const service = row[0];
       const account = row[1];
+
+      // ★ ここで空行を明示的にスキップ
+      if (!service || !account) {
+        continue;
+      }
+
       items.push({ service, account });
     }
   }
@@ -101,6 +127,7 @@ function createInitialData() {
     remaining: getRemainingSeconds(),
   };
 }
+
 
 /**
  * 残り秒数（30秒ステップ）
