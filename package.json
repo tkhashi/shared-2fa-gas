@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "build:server": "webpack",
-    "build:client": "vite build && cp dist/client/index-client.html dist/client-bundle.html",
+    "build:client": "vite build",
     "build": "npm run build:server && npm run build:client",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

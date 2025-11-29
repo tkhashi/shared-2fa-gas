@@ -1,19 +1,18 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { viteSingleFile } from 'vite-plugin-singlefile';
+import path from 'path';
 
 export default defineConfig({
   plugins: [
-    react({
-      tsDecorators: true,
-    }),
+    react(),
     viteSingleFile(), // すべてのJS/CSSをHTMLにインライン化
   ],
   build: {
-    outDir: 'dist/client',
-    emptyOutDir: true,
+    outDir: 'dist',
+    emptyOutDir: false, // Code.jsを消さないようにfalseに
     rollupOptions: {
-      input: 'index-client.html',
+      input: path.resolve(__dirname, 'index.html'),
     },
   },
   resolve: {
