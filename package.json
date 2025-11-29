@@ -6,6 +6,7 @@
     "build:server": "webpack",
     "build:client": "vite build",
     "build": "npm run build:server && npm run build:client",
+    "deploy": "npm run build && clasp push",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -18,6 +19,7 @@
     "react-dom": "^19.2.0"
   },
   "devDependencies": {
+    "@google/clasp": "^2.4.2",
     "@types/google-apps-script": "^2.0.8",
     "@types/node": "^24.10.1",
     "@types/react": "^19.2.7",

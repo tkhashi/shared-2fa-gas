@@ -39,21 +39,73 @@ https://docs.google.com/spreadsheets/d/1QV0287lXCrHhbj9_6n3Oks2YXO1CN1DhqGcgAMGz
 npm install
 ```
 
-2. ビルド:
+2. GASプロジェクトのセットアップ:
+
+```bash
+# claspでログイン
+npx clasp login
+
+# 新規GASプロジェクトを作成する場合
+npx clasp create --title "Shared 2FA" --type webapp --rootDir ./dist
+
+# 既存のGASプロジェクトに接続する場合
+# .clasp.json.templateをコピーして.clasp.jsonを作成し、scriptIdを設定
+cp .clasp.json.template .clasp.json
+# エディタで.clasp.jsonのscriptIdを編集
+```
+
+3. ビルド:
 
 ```bash
 npm run build
 ```
 
-3. GASプロジェクトに以下のファイルをコピー:
-   - `dist/Code.js` → GASの「コード.gs」（「.gs」ファイルとして追加）
-   - `src/index.html` → GASの「index.html」（HTMLファイルとして追加）
-   - `dist/client-bundle.html` → GASの「client-bundle.html」（HTMLファイルとして追加）
+4. GASにデプロイ:
 
-4. GASをWebアプリケーションとしてデプロイ
+```bash
+npm run deploy
+```
+
+5. GASをWebアプリケーションとしてデプロイ
+   - GASエディタを開く: `npx clasp open`
+   - デプロイ → 新しいデプロイ
    - アクセス権限を適切に設定
 
-## 使い方
+## GitHub Actionsによる自動デプロイ
+
+mainブランチにpushすると自動的にGASにデプロイされます。
+
+### 初期設定
+
+1. **clasp認証情報を取得**:
+```bash
+# ローカルでclaspにログイン
+npx clasp login
+
+# 認証情報を確認
+cat ~/.clasprc.json
+```
+
+2. **GitHub Secretsに登録**:
+
+リポジトリの Settings → Secrets and variables → Actions で以下を追加:
+
+- `CLASP_JSON`: `.clasp.json` の内容
+  ```json
+  {
+    "scriptId": "YOUR_SCRIPT_ID_HERE",
+    "rootDir": "./dist",
+    "projectId": "YOUR_PROJECT_ID_HERE"
+  }
+  ```
+
+- `CLASPRC_JSON`: `~/.clasprc.json` の内容（clasp loginで生成されたファイル）
+
+3. **動作確認**:
+- mainブランチにpushすると自動デプロイが開始されます
+- Actions タブでデプロイ状況を確認できます
+
+## ビルド
 1.スプレッドシートにシード値を記載
 
 <img width="610" height="295" alt="スクリーンショット 2025-11-30 4 59 54" src="https://github.com/user-attachments/assets/0582d8ad-8877-46c7-a555-7c0bf7c68d1e" />
