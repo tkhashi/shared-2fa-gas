@@ -22,6 +22,19 @@ module.exports = {
       },
     ],
   },
+  optimization: {
+    minimize: true,
+    minimizer: [
+      new (require('terser-webpack-plugin'))({
+        terserOptions: {
+          format: {
+            comments: false, // すべてのコメントを削除
+          },
+        },
+        extractComments: false, // LICENSEファイルを生成しない
+      }),
+    ],
+  },
   plugins: [
     new NodePolyfillPlugin(),
     new GasPlugin(),
