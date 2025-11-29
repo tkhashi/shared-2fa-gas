@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
+    "build:server": "webpack",
+    "build:client": "vite build",
+    "build": "npm run build:server && npm run build:client",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -10,15 +13,22 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "authenticator": "^1.1.5"
+    "authenticator": "^1.1.5",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
   },
   "devDependencies": {
     "@types/google-apps-script": "^2.0.8",
     "@types/node": "^24.10.1",
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^5.1.1",
     "gas-webpack-plugin": "^2.6.0",
     "node-polyfill-webpack-plugin": "^4.1.0",
     "ts-loader": "^9.5.4",
     "typescript": "^5.9.3",
+    "vite": "^7.2.4",
+    "vite-plugin-singlefile": "^2.3.0",
     "webpack": "^5.103.0",
     "webpack-cli": "^6.0.1"
   }

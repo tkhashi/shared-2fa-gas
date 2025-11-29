@@ -11,6 +11,6 @@
     "resolveJsonModule": true,
     "types": ["google-apps-script", "node"]
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist"]
+  "include": ["src/index.ts", "src/types.ts", "src/sheet.ts", "src/totp.ts"],
+  "exclude": ["node_modules", "dist", "src/client"]
 }
