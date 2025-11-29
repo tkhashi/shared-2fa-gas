@@ -22,6 +22,9 @@ https://zenn.dev/gmomedia/articles/f24377fbabbf84
 
 ## スプレッドシート設定
 
+下記のスプレッドシートを自身のGoogle Driveにコピーしてください。
+https://docs.google.com/spreadsheets/d/1QV0287lXCrHhbj9_6n3Oks2YXO1CN1DhqGcgAMGzWv4/edit?usp=sharing
+
 `secret-key` という名前のシートを作成し、以下の列を設定:
 
 | A列 | B列 | C列 |
