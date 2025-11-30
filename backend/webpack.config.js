@@ -9,6 +9,9 @@ module.exports = {
     path: path.resolve(__dirname, '../dist'),
     filename: 'Code.js',
     libraryTarget: 'this', // GAS のグローバルに載せる
+    environment: { // 互換性のためにアロー関数を避ける
+      arrowFunction: false,
+    },
   },
   resolve: {
     extensions: ['.ts', '.js'],
