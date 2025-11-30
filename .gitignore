@@ -90,6 +90,7 @@ web_modules/
 # Next.js build output
 .next
 out
+dist
 
 # Nuxt.js build / generate output
 .nuxt
@@ -141,7 +142,3 @@ out
 .svelte-kit
 
 # End of https://www.toptal.com/developers/gitignore/api/node
-
-# clasp credentials
-.clasp.json
-.clasprc.json

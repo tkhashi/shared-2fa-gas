@@ -43,7 +43,6 @@ npm run build
 成果物 (`dist/`):
 - `Code.js` (GAS用バンドル。先頭に process polyfill を自動挿入)
 - `index.html` (Reactビルド済みインラインHTML)
-- `appsscript.json` (タイムゾーン/設定)
 
 ### 2. コピペで貼り付け
 GASエディタに以下を手動で張り付けます。
