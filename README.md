@@ -31,79 +31,44 @@ https://docs.google.com/spreadsheets/d/1QV0287lXCrHhbj9_6n3Oks2YXO1CN1DhqGcgAMGz
 |-----|-----|-----|
 | service | account | secret (Base32) |
 
-## セットアップ
+## セットアップ 
 
-1. 依存関係のインストール:
+### 1. 依存関係インストール・ビルド
 
 ```bash
 npm install
-```
-
-2. GASプロジェクトのセットアップ:
-
-```bash
-# claspでログイン
-npx clasp login
-
-# 新規GASプロジェクトを作成する場合
-npx clasp create --title "Shared 2FA" --type webapp --rootDir ./dist
-
-# 既存のGASプロジェクトに接続する場合
-# .clasp.json.templateをコピーして.clasp.jsonを作成し、scriptIdを設定
-cp .clasp.json.template .clasp.json
-# エディタで.clasp.jsonのscriptIdを編集
-```
-
-3. ビルド:
-
-```bash
 npm run build
 ```
 
-4. GASにデプロイ:
+成果物 (`dist/`):
+- `Code.js` (GAS用バンドル。先頭に process polyfill を自動挿入)
+- `index.html` (Reactビルド済みインラインHTML)
+- `appsscript.json` (タイムゾーン/設定)
 
-```bash
-npm run deploy
+### 2. コピペで貼り付け
+GASエディタに以下を手動で張り付けます。
+
+1. `dist/index.html` の中身を、GASの `index.html` (HTMLファイル) に全てコピペ
+2. `dist/Code.js` の中身を、GASのスクリプトファイル (例: `Code.js`) に全てコピペ
+スクリプト先頭に以下を挿入
+
+```js
+if (typeof process === 'undefined') {
+  var process = {
+    env: {},
+    argv: [],
+    version: '',
+    cwd: function () {
+      return '';
+    }
+  };
+}
+
 ```
+3. 「保存」をクリック
 
-5. GASをWebアプリケーションとしてデプロイ
-   - GASエディタを開く: `npx clasp open`
-   - デプロイ → 新しいデプロイ
-   - アクセス権限を適切に設定
-
-## GitHub Actionsによる自動デプロイ
-
-mainブランチにpushすると自動的にGASにデプロイされます。
-
-### 初期設定
-
-1. **clasp認証情報を取得**:
-```bash
-# ローカルでclaspにログイン
-npx clasp login
-
-# 認証情報を確認
-cat ~/.clasprc.json
-```
-
-2. **GitHub Secretsに登録**:
-
-リポジトリの Settings → Secrets and variables → Actions で以下を追加:
-
-- `CLASP_JSON`: `.clasp.json` の内容
-  ```json
-  {
-    "scriptId": "YOUR_SCRIPT_ID_HERE",
-    "rootDir": "./dist",
-    "projectId": "YOUR_PROJECT_ID_HERE"
-  }
-  ```
-
-- `CLASPRC_JSON`: `~/.clasprc.json` の内容（clasp loginで生成されたファイル）
-
-3. **動作確認**:
-- mainブランチにpushすると自動デプロイが開始されます
-- Actions タブでデプロイ状況を確認できます
+### 3. デプロイ（Webアプリ）
+GASエディタ → デプロイ → 新しいデプロイ → 「アクセスできるユーザー」を必要に応じて設定し、公開URLを取得します。
 
 ## ビルド
 1.スプレッドシートにシード値を記載
@@ -125,42 +90,6 @@ cat ~/.clasprc.json
 
 
 トークンは30秒ごとに更新されます。残り時間がカウントダウン表示されます。
-
-## 技術スタック
-
-- **フロントエンド**: React 19 + TypeScript
-- **ビルドツール**: Vite（クライアント側）、Webpack（サーバー側）
-- **バックエンド**: Google Apps Script
-- **TOTP生成**: authenticator
-- **デプロイ**: すべてのJSがHTMLにインライン化される単一ファイル構成
-
-## アーキテクチャ
-
-### ファイル構成
-
-```
-src/
-  index.ts              # GAS サーバー側エントリポイント (doGet/doPost)
-  index.html            # GASテンプレートHTML（client-bundleを読み込む）
-  types.ts              # 共通型定義（サーバー・クライアント間で共有）
-  sheet.ts              # スプレッドシート操作
-  totp.ts               # TOTP生成ロジック
-  client/
-    main.tsx            # Reactエントリポイント
-    App.tsx             # メインReactコンポーネント
-
-dist/
-  Code.js               # サーバー側バンドル（GASにデプロイ）
-  client-bundle.html    # クライアント側バンドル（すべてインライン化）
-```
-
-### 特徴
-
-- **React**: モダンなUIライブラリで保守性向上
-- **型安全性**: TypeScriptによる型チェック
-- **単一ファイル**: vite-plugin-singlefileでJS/CSSをHTMLにインライン化
-- **責務分離**: サーバー側とクライアント側のコードを完全分離
-- **コード共有**: `types.ts`の型とロジックをサーバー・クライアント間で共有
 
 ## ライセンス
 
