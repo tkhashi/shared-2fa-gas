@@ -29,7 +29,7 @@ https://docs.google.com/spreadsheets/d/1QV0287lXCrHhbj9_6n3Oks2YXO1CN1DhqGcgAMGz
 
 | A列 | B列 | C列 |
 |-----|-----|-----|
-| service | account | secret (Base32) |
+| service | account | secret |
 
 ## セットアップ 
 
@@ -69,7 +69,11 @@ if (typeof process === 'undefined') {
 ### 3. デプロイ（Webアプリ）
 GASエディタ → デプロイ → 新しいデプロイ → 「アクセスできるユーザー」を必要に応じて設定し、公開URLを取得します。
 
-## ビルド
+## 使用方法
+0. シートのコピー
+- 下記のスプレッドシートを自身のGoogle Driveにコピーしてください。
+  - https://docs.google.com/spreadsheets/d/1QV0287lXCrHhbj9_6n3Oks2YXO1CN1DhqGcgAMGzWv4/edit?usp=sharing
+
 1.スプレッドシートにシード値を記載
 
 <img width="610" height="295" alt="スクリーンショット 2025-11-30 4 59 54" src="https://github.com/user-attachments/assets/0582d8ad-8877-46c7-a555-7c0bf7c68d1e" />
